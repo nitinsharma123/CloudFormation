@@ -1,0 +1,53 @@
+Description: "Create SSM Parameter"
+Parameters:
+  DatabaseMasterUsername:
+    AllowedPattern: ^([a-zA-Z0-9]*)$
+    Description: The Amazon RDS master username.
+    ConstraintDescription: Must contain only alphanumeric characters (minimum 8; maximum 16).
+    MaxLength: 16
+    MinLength: 8
+    Type: String
+
+  DatabaseMasterPassword:
+    AllowedPattern: ^([a-z0-9A-Z`~!#$%^&*()_+,\\-])*$
+    ConstraintDescription: Must be letters (upper or lower), numbers, and these special characters '_'`~!#$%^&*()_+,-    
+    Description: The Amazon RDS master password.
+    MaxLength: 41
+    MinLength: 8
+    NoEcho: true
+    Type: String
+
+  DatabaseClusterEndpointAddress:
+    Type: String
+
+  Environment:
+    Type: String  
+        
+
+Resources:
+  UserNameParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Join [ "-", ["username", !Ref Environment] ]
+      Type: "String"
+      Value: !Ref DatabaseMasterUsername
+      Description: "SSM Parameter for rds username."
+      #AllowedPattern: "^[a-zA-Z]{1,10}$"
+
+  PasswordParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Join [ "-", ["password", !Ref Environment] ]
+      Type: "String"
+      Value: !Ref DatabaseMasterPassword
+      Description: "SSM Parameter for rds password."
+      #AllowedPattern: "^[a-zA-Z]{1,10}$"
+      
+  RDSEndpointParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Join [ "-", ["endpoint", !Ref Environment] ]
+      Type: "String"
+      Value: !Ref DatabaseClusterEndpointAddress
+      Description: "SSM Parameter for rds endpoint."
+      #AllowedPattern: "^[a-zA-Z]{1,10}$"    
